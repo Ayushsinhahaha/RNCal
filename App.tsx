@@ -1,118 +1,225 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
+  Dimensions,
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
+  TouchableOpacity,
   View,
 } from 'react-native';
+import React, {useState} from 'react';
+import Header from './src/component/Header';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const width = Dimensions.get('window').width;
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const App = () => {
+  const [result, setResult] = useState('');
+  const [num1, setNum1] = useState('');
+  const [num2, setNum2] = useState('');
+  const [operator, setOperator] = useState('');
+  const [calculation, setCalculation] = useState('');
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+  const handleNum = num => {
+    if (!operator) {
+      setNum1(num1 + num.toString());
+      setCalculation(num1 + num.toString());
+    } else {
+      setNum2(num2 + num.toString());
+      setCalculation(num1 + operator + num2 + num.toString());
+    }
+  };
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const handleOperator = op => {
+    if (num1) {
+      setOperator(op);
+      setCalculation(num1 + op);
+    }
+  };
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const handleResult = () => {
+    let res;
+    switch (operator) {
+      case '+':
+        res = Number(num1) + Number(num2);
+        break;
+      case '-':
+        res = Number(num1) - Number(num2);
+        break;
+      case '*':
+        res = Number(num1) * Number(num2);
+        break;
+      case '/':
+        res = Number(num1) / Number(num2);
+        break;
+    }
+    setResult(res.toString());
+    setNum1('');
+    setNum2('');
+    setOperator('');
+    setCalculation(num1 + operator + num2 + num1.toString());
+  };
+
+  const handleClear = () => {
+    setResult('');
+    setNum1('');
+    setNum2('');
+    setOperator('');
+    setCalculation('');
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+    <>
+      <Header title={'Calculator'} />
+      <SafeAreaView style={styles.container}>
+        <View style={styles.monitor}>
+          <Text style={styles.monitorText}>
+            {num1} {operator} {num2} 
+            {/* {operator && num2 ? '=' : ''} */}
+            {}
+          </Text>
+          <Text style={styles.resultText}>{result}</Text>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        {/* row 1 */}
+        {/* <View style={styles.row}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>AC</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>( )</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>%</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>/</Text>
+          </TouchableOpacity>
+        </View> */}
+        {/* row2 */}
+        <View style={styles.row}>
+          <TouchableOpacity onPress={() => handleNum(7)} style={styles.button}>
+            <Text style={styles.buttonText}>7</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNum(8)} style={styles.button}>
+            <Text style={styles.buttonText}>8</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNum(9)} style={styles.button}>
+            <Text style={styles.buttonText}>9</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleOperator('/')}
+            style={styles.button}>
+            <Text style={styles.buttonText}>/</Text>
+          </TouchableOpacity>
+        </View>
+        {/* row3 */}
+        <View style={styles.row}>
+          <TouchableOpacity onPress={() => handleNum(4)} style={styles.button}>
+            <Text style={styles.buttonText}>4</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNum(5)} style={styles.button}>
+            <Text style={styles.buttonText}>5</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNum(6)} style={styles.button}>
+            <Text style={styles.buttonText}>6</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleOperator('*')}
+            style={styles.button}>
+            <Text style={styles.buttonText}>*</Text>
+          </TouchableOpacity>
+        </View>
+        {/* row4 */}
+        <View style={styles.row}>
+          <TouchableOpacity onPress={() => handleNum(1)} style={styles.button}>
+            <Text style={styles.buttonText}>1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNum(2)} style={styles.button}>
+            <Text style={styles.buttonText}>2</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNum(3)} style={styles.button}>
+            <Text style={styles.buttonText}>3</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleOperator('-')}
+            style={styles.button}>
+            <Text style={styles.buttonText}>-</Text>
+          </TouchableOpacity>
+        </View>
+        {/* row 5 */}
+        <View style={styles.row}>
+          <TouchableOpacity onPress={() => handleNum(0)} style={styles.button}>
+            <Text style={styles.buttonText}>0</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleClear()} style={styles.button}>
+            <Text style={styles.buttonText}>C</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              handleResult();
+            }}
+            style={styles.button}>
+            <Text style={styles.buttonText}>=</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleOperator('+')}
+            style={styles.button}>
+            <Text style={styles.buttonText}>+</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </>
   );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+};
 
 export default App;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: 'grey',
+    justifyContent: 'flex-end',
+  },
+  monitor: {
+    backgroundColor: 'lightgrey',
+    width: width - 20,
+    height: 70,
+    marginBottom: 10,
+    borderRadius: 20,
+    borderWidth: 2,
+  },
+  monitorText: {
+    fontSize: 40,
+    textAlign: 'right',
+    right:10
+  },
+  row: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  button: {
+    width: width / 5,
+    height: width / 5,
+    borderWidth: 1,
+    backgroundColor: '#000',
+    margin: 5,
+    borderRadius: 55,
+    justifyContent: 'center',
+    borderColor: 'dodgerblue',
+  },
+  buttonText: {
+    fontSize: 32,
+    color: '#fff',
+    textAlign: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold',
+  },
+  resultText:{
+    fontSize: 38,
+    color: 'dodgerblue',
+    textAlign: 'right',
+    fontWeight: 'bold',
+    bottom:48,
+    right:14
+
+  }
+});
