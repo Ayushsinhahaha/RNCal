@@ -28,7 +28,7 @@ const App = () => {
     }
   };
 
-  const handleOperator = op => {
+  const handleOperator = (op) => {
     if (num1) {
       setOperator(op);
       setCalculation(num1 + op);
